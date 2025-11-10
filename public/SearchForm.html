@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Inventory</title>
+  </head>
+  <body>
+    <form
+      action="/search"
+      method="POST"
+      style="display: grid; width: 200px; gap: 10px"
+    >
+      <label for="id">Inventory ID:</label>
+      <input type="text" name="id" required />
+
+      <label>
+        <input type="checkbox" name="has_photo" />
+        Add photo link to description
+      </label>
+
+      <input type="submit" value="Search" />
+    </form>
+  </body>
+</html>

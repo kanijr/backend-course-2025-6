@@ -16,13 +16,18 @@ const { port, host, cache } = options;
 const uploadsPath = path.join(cache, "uploads");
 const dbFile = path.join(cache, "inventory.json");
 
-if (!fs.existsSync(cache)) fs.mkdirSync(cache, { recursive: true });
+if (!fs.existsSync(cache)) {
+  fs.mkdirSync(cache, { recursive: true });
+}
 
-if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath);
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath);
+}
 const upload = multer({ dest: uploadsPath });
 
-if (!fs.existsSync(dbFile))
+if (!fs.existsSync(dbFile)) {
   fs.writeFileSync(dbFile, JSON.stringify({ nextId: 1, list: [] }), "utf-8");
+}
 let inventory = JSON.parse(fs.readFileSync(dbFile));
 
 const app = express();
@@ -41,9 +46,10 @@ const formatItemResponse = (item) => {
 };
 
 app.post("/register", upload.single("photo"), (req, res) => {
-  const { inventory_name, description } = req.body;
+  let { inventory_name, description } = req.body;
   if (!inventory_name) return res.status(400).send("Name required");
 
+  if (!description) description = "";
   const id = inventory.nextId;
   inventory.nextId += 1;
 
@@ -157,10 +163,14 @@ app.post("/search", (req, res) => {
     return res.status(404).json("Inventory with this id not found");
   }
 
-  let responseItem = formatItemResponse(item);
+  const { photo, ...responseItem } = formatItemResponse(item);
 
   if (has_photo === "on") {
-    responseItem.description = `${responseItem.description} [Photo: ${responseItem.photo}]`;
+    if (photo) {
+      responseItem.description += " [Photo:" + photo + "]";
+    } else {
+      responseItem.description += " [No photo available]";
+    }
   }
 
   res.status(200).json(responseItem);

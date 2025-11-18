@@ -308,8 +308,14 @@ app.delete("/inventory/:id", (req, res) => {
   const item = inventory.list.find((v) => v.id === Number(id));
 
   if (!item) {
-    if (req.file) fs.unlinkSync(req.file.path);
     return res.status(404).json("Inventory with this id not found");
+  }
+
+  if (item.photo) {
+    const photoPath = path.join(uploadsPath, item.photo);
+    if (fs.existsSync(photoPath)) {
+      fs.unlinkSync(photoPath);
+    }
   }
 
   inventory.list = inventory.list.filter((i) => i !== item);

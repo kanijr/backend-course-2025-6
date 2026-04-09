@@ -5,6 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
+const cors = require("cors");
 
 program
   .requiredOption("-h, --host <host>", "Server listen host")
@@ -36,6 +37,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(cors({ origin: "http://localhost:5173" }));
 
 const formatItemResponse = (item) => {
   const photoUrl = item.photo
